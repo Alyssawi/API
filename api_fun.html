@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Fun</title>
+    <script>
+        function loadMessages() {
+			request = new XMLHttpRequest();
+			console.log("1: created request");
+  
+			request.open("GET", "https://opentdb.com/api.php?amount=3&category=18&difficulty=easy&type=boolean", true);
+			console.log("2: open success");
+ 	
+			request.onreadystatechange = function() {
+				console.log("3:  event fired");	
+ 
+				if (request.readyState == 4 && request.status == 200) {
+					console.log("5:  data is ready");
+					theData = request.responseText;
+
+                    questions = JSON.parse(theData)["results"];
+                    trivia = "";
+                    answers = "";
+                    for (let i = 0; i < questions.length; i++) {
+                        question = questions[i];
+                        trivia += "Question " + (i + 1) + ": " + question["question"] + "<br>";
+                        answers += "Question " + (i + 1) + ": " + question["correct_answer"] + "<br>";
+                    }
+                    document.getElementById("trivia").innerHTML = trivia;
+                    document.getElementById("answers").innerHTML = answers;
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+					document.getElementById("messages").innerHTML = "Whoops, something went terribly wrong!";
+				}
+
+				else if (request.readyState == 3) {
+					console.log("6:  ready state 3- request received,data being sent");
+					document.getElementById("messages").innerHTML = "Come back soon!";
+				}
+			}
+			request.send();
+			console.log("4 request sent");
+		}
+
+    </script>
+</head>
+<body onload="loadMessages()">
+    <div>
+        <h1>Fun True or False Trivia Questions!</h1>
+        <h2>Questions:</h2>
+        <p id="trivia"></p>
+        <h2>Answers:</h2>
+        <p id="answers"></p>
+    </div>
+    <div>
+        <h1>About this API</h1>
+        <p>
+            The API I selected gives trivia questions and their answers. <br>
+            I got the API from <a href="https://opentdb.com/api_config.php">https://opentdb.com/api_config.php</a><br>
+            The options I chose when I requested the API were the number of trivia questions (3), 
+            the category (Computers), the difficulty (Easy), and the question type (True/False). <br>
+            This API could be helpful for 1) a fun games website or 2) adding engagement to any website by having a fun daily trivia question 
+            in a category related to the type of website. For example, a sports website could have a daily trivia question about sports. 
+        </p>
+    </div>
+</body>
+</html>
